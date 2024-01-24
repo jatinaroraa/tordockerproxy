@@ -1,0 +1,14 @@
+//to kill old ip in terminal of docker container
+pkill -HUP tor
+
+//to enter docker shell
+sudo docker exec -it mytor /bin/bash
+
+//use apk in shell
+
+//check ip in container
+curl -x socks5h://localhost:9050 http://checkip.amazonaws.com/
+185.220.101.42
+
+//check in terminal
+sudo  docker exec -it mytor curl -x socks5h://localhost:9050 http://checkip.amazonaws.com/
