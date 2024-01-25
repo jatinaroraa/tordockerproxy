@@ -7,7 +7,8 @@ const { exec } = require("child_process");
 
 puppeteer.use(StealthPlugin());
 const youtubeVideoUrl = "https://www.youtube.com/watch?v=rXN37A1Z7lc";
-
+const videoUrl = process.env.videoUrl;
+var viewDeliverCount = 0;
 const duration = 32000;
 const torProxy = "socks5://localhost:9050";
 const sock = "socks5://localhost:9050";
@@ -32,15 +33,19 @@ const script = async () => {
     ],
     // args: [`--proxy-server=${torProxy}`],
   });
-  console.log("new page");
   let ip = await getIp();
+  if (!ip) {
+    return false;
+  }
+  console.log("starting new page with ip", ip);
+
   const page = await browser.newPage();
   try {
     // Set the viewport size
     await page.setViewport({ width: 1280, height: 720 });
 
     // Open the YouTube video
-    await page.goto(youtubeVideoUrl, {
+    await page.goto(`${videoUrl}`, {
       waitUntil: "domcontentloaded",
       timeout: 0,
     });
@@ -60,26 +65,25 @@ const script = async () => {
     const loadTime = Date.now() - startTime;
 
     let ip = await getIp();
-    console.log(loadTime, "loadTime");
-
+    console.log(loadTime, "total time page load");
+    viewDeliverCount++;
     return true;
   } catch (error) {
     console.log(error, "error");
+    return false;
   }
 
   return false;
 };
-let check = 0;
-var counter = 0;
-var intervalId;
 
 const getIp = async () => {
   let res = await axios.get("http://checkip.amazonaws.com/", {
     httpAgent,
     httpsAgent,
   });
-  console.log(res.data, "ip address");
+
   if (res.data) return res.data;
+  else return null;
 };
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -91,13 +95,9 @@ async function executeFunctions() {
 }
 app.listen(3001, async () => {
   console.log("listening");
-  // let op = await script();
-  // if (op) {
-  //   await torControl();
-  //   setTimeout(script, 1000);
-  // }
-  for (let i = 0; i < 5; i++) {
+  let loadtime = process.env.loadtime ? process.env.loadTime : 5;
+  for (let i = 0; i < loadtime; i++) {
     await executeFunctions();
   }
-  console.log("finish loop");
+  console.log("finish loop total view deliver : ", viewDeliverCount);
 });

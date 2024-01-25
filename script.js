@@ -29,19 +29,13 @@ const torControl = async () => {
     "16:DE706878136E03C160423CA685E19824AD4CD88ABF5014763033ABFA20";
   tr.TorControlPort.password = "mytor";
   tr.setTorAddress("localhost", 9050);
-  tr.request(
-    { url: "http://checkip.amazonaws.com/", timeout: 1000 },
-    async function (err, res, body) {
-      if (err) {
-        console.log(err, "err in rq");
-      }
-      console.log(body, "bodyyy");
-      tr.newTorSession(function (err, mes) {
-        if (err) console.log(err, "error");
-        console.log(mes, "message");
-      });
+  tr.newTorSession(function (err, mes) {
+    if (err) {
+      console.log(err, "error");
+      return null;
     }
-  );
+    console.log(mes, "message");
+  });
 };
 
 module.exports = {
