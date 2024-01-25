@@ -58,7 +58,7 @@ const script = async () => {
 
     // Watch the video for the specified duration
     await page.waitForTimeout(duration);
-    await page.screenshot({ path: `${startTime}.png` });
+    // await page.screenshot({ path: `${startTime}.png` });
 
     // Close the browser
     await browser.close();
@@ -94,8 +94,8 @@ async function executeFunctions() {
   await script();
 }
 app.listen(3001, async () => {
-  console.log("listening");
-  let loadtime = process.env.loadtime ? process.env.loadTime : 5;
+  console.log("listening load time: ", process.env.loadtime);
+  let loadtime = process.env.loadtime ? process.env.loadtime : 5;
   for (let i = 0; i < loadtime; i++) {
     await executeFunctions();
   }
